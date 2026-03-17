@@ -2,12 +2,7 @@ public class Screen
 {
     public int Width { get; set; }
     public int Height { get; set; }
-    public char[,] Map 
-    {
-        get; 
-        set; // custom setter logic for delta map?
-    }
-    private bool IsOnTerminal = false;
+    public char[,] Map { get; set; }
 
     public Screen(int width, int height)
     {
@@ -28,22 +23,25 @@ public class Screen
 
     public void PrintScreen()
     {
-        if (!IsOnTerminal) // Draw entire screen if not printed
+        Console.SetCursorPosition(0, 0); // Overwrite instead of clear to avoid flickering
+
+        for (int y=0; y<Height; y++)
         {
-            for (int y=0; y<Height; y++)
+            for (int x=0; x<Width; x++)
             {
-                for (int x=0; x<Width; x++)
-                {
-                    Console.Write(Map[x, y]);
-                }
-                Console.WriteLine();
+                Console.Write(Map[x, y]);
             }
-            IsOnTerminal = true;
+            Console.WriteLine();
         }
+
+        Console.CursorVisible = false; // hide cursor for better experience
     }
 
-    public bool IsLegalSpace(int x, int y)
+    public bool isWall(int x, int y)
     {
-        return x >= 0 && x < Width && y >= 0 && y < Height;
+        if (x < 0 || x >= Width || y < 0 || y >= Height)
+            return true; // Treat out of bounds as walls
+        else
+            return Map[x, y] == '#';
     }
 }
