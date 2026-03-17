@@ -1,10 +1,13 @@
-using System.IO;
-
 public class Screen
 {
     public int Width { get; set; }
     public int Height { get; set; }
-    public char[,] Map { get; set; }
+    public char[,] Map 
+    {
+        get; 
+        set; // custom setter logic for delta map?
+    }
+    private bool IsOnTerminal = false;
 
     public Screen(int width, int height)
     {
@@ -25,13 +28,22 @@ public class Screen
 
     public void PrintScreen()
     {
-        for (int y=0; y<Height; y++)
+        if (!IsOnTerminal) // Draw entire screen if not printed
         {
-            for (int x=0; x<Width; x++)
+            for (int y=0; y<Height; y++)
             {
-                Console.Write(Map[x, y]);
+                for (int x=0; x<Width; x++)
+                {
+                    Console.Write(Map[x, y]);
+                }
+                Console.WriteLine();
             }
-            Console.WriteLine();
+            IsOnTerminal = true;
         }
+    }
+
+    public bool IsLegalSpace(int x, int y)
+    {
+        return x >= 0 && x < Width && y >= 0 && y < Height;
     }
 }
